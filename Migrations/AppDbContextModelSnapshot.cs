@@ -22,21 +22,6 @@ namespace eTickets.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("ActorMovie", b =>
-                {
-                    b.Property<int>("ActorsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MoviesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ActorsId", "MoviesId");
-
-                    b.HasIndex("MoviesId");
-
-                    b.ToTable("ActorMovie");
-                });
-
             modelBuilder.Entity("eTickets.Models.Actor", b =>
                 {
                     b.Property<int>("Id")
@@ -57,6 +42,21 @@ namespace eTickets.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Actors");
+                });
+
+            modelBuilder.Entity("eTickets.Models.Actor_Movie", b =>
+                {
+                    b.Property<int>("ActorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ActorId", "MovieId");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("Actors_Movies");
                 });
 
             modelBuilder.Entity("eTickets.Models.Cinema", b =>
@@ -147,19 +147,23 @@ namespace eTickets.Migrations
                     b.ToTable("Producers");
                 });
 
-            modelBuilder.Entity("ActorMovie", b =>
+            modelBuilder.Entity("eTickets.Models.Actor_Movie", b =>
                 {
-                    b.HasOne("eTickets.Models.Actor", null)
-                        .WithMany()
-                        .HasForeignKey("ActorsId")
+                    b.HasOne("eTickets.Models.Actor", "Actor")
+                        .WithMany("Actors_Movies")
+                        .HasForeignKey("ActorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("eTickets.Models.Movie", null)
-                        .WithMany()
-                        .HasForeignKey("MoviesId")
+                    b.HasOne("eTickets.Models.Movie", "Movie")
+                        .WithMany("Actors_Movies")
+                        .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Actor");
+
+                    b.Navigation("Movie");
                 });
 
             modelBuilder.Entity("eTickets.Models.Movie", b =>
@@ -181,9 +185,19 @@ namespace eTickets.Migrations
                     b.Navigation("Producer");
                 });
 
+            modelBuilder.Entity("eTickets.Models.Actor", b =>
+                {
+                    b.Navigation("Actors_Movies");
+                });
+
             modelBuilder.Entity("eTickets.Models.Cinema", b =>
                 {
                     b.Navigation("Movies");
+                });
+
+            modelBuilder.Entity("eTickets.Models.Movie", b =>
+                {
+                    b.Navigation("Actors_Movies");
                 });
 
             modelBuilder.Entity("eTickets.Models.Producer", b =>
